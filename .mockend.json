@@ -1,6 +1,9 @@
 {
   "User": {
     "name": {
+      "regexp": "puas[0-9]{5}"
+    },
+    "password": {
       "string": {}
     },
     "avatarUrl": {

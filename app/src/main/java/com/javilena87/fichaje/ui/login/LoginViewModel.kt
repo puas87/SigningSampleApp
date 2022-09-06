@@ -7,14 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.javilena87.fichaje.data.model.UserData
 import com.javilena87.fichaje.data.prefs.FichajeSharedPrefs
-import com.javilena87.fichaje.data.repository.FichajeRepository
+import com.javilena87.fichaje.data.repository.DefaultFichajeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val fichajeRepository: FichajeRepository,
+    private val fichajeRepository: DefaultFichajeRepository,
     private val fichajeSharedPreferences: FichajeSharedPrefs
 ) : ViewModel() {
 

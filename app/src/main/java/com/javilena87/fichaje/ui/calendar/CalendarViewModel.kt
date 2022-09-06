@@ -1,12 +1,11 @@
 package com.javilena87.fichaje.ui.calendar
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.javilena87.fichaje.data.db.HolidayReg
-import com.javilena87.fichaje.data.repository.HolidayRepository
+import com.javilena87.fichaje.data.repository.DefaultHolidayRepository
 import com.javilena87.fichaje.ui.calendar.adapter.DataItem
 import com.javilena87.fichaje.ui.calendar.model.CalendarHolidaysListState
 import com.javilena87.fichaje.ui.calendar.model.CalendarOneDaySelectionState
@@ -19,7 +18,7 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class CalendarViewModel @Inject constructor(private val holidayRepository: HolidayRepository) :
+class CalendarViewModel @Inject constructor(private val holidayRepository: DefaultHolidayRepository) :
     ViewModel() {
 
     private val _calendarHolidaysListState =

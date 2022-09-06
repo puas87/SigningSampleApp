@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.javilena87.fichaje.data.db.firebase.FirebaseHolidaysDatabaseValueResult
+import com.javilena87.fichaje.data.NationalHolidaysDatabaseValueResult
 import com.javilena87.fichaje.data.prefs.FichajeSharedPrefs
-import com.javilena87.fichaje.data.repository.FichajeRepository
-import com.javilena87.fichaje.data.repository.HolidayRepository
+import com.javilena87.fichaje.data.repository.DefaultFichajeRepository
+import com.javilena87.fichaje.data.repository.DefaultHolidayRepository
 import com.javilena87.fichaje.ui.result.model.ResultAlarmState
 import com.javilena87.fichaje.ui.result.model.ResultEnterViewState
 import com.javilena87.fichaje.ui.result.model.ResultExitViewState
@@ -23,9 +23,9 @@ const val VALID_CHECK_OUT = "check out"
 
 @HiltViewModel
 class ResultViewModel @Inject constructor(
-    private val fichajeRepository: FichajeRepository,
+    private val fichajeRepository: DefaultFichajeRepository,
     private val fichajeSharedPrefs: FichajeSharedPrefs,
-    private val holidayRepository: HolidayRepository
+    private val holidayRepository: DefaultHolidayRepository
 ) :
     ViewModel() {
 
@@ -92,13 +92,13 @@ class ResultViewModel @Inject constructor(
 
     private suspend fun getDayFromFirebase(calendar: Calendar): Long {
         when (val result = holidayRepository.getHolidayFromFirebase(calendar)) {
-            is FirebaseHolidaysDatabaseValueResult.Success -> {
+            is NationalHolidaysDatabaseValueResult.Success -> {
                 return result.validTime
             }
-            is FirebaseHolidaysDatabaseValueResult.Error -> {
+            is NationalHolidaysDatabaseValueResult.Error -> {
                 return result.currentTime
             }
-            is FirebaseHolidaysDatabaseValueResult.NotValid -> {
+            is NationalHolidaysDatabaseValueResult.NotValid -> {
                 calendar.add(Calendar.DAY_OF_MONTH, getDaysToAdd(calendar.get(Calendar.DAY_OF_WEEK)))
                 return getDayFromFirebase(calendar)
             }

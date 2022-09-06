@@ -1,6 +1,7 @@
 package com.javilena87.fichaje.data.db.firebase
 
 import com.google.firebase.database.DatabaseReference
+import com.javilena87.fichaje.data.NationalHolidaysDatabaseValueResult
 import com.javilena87.fichaje.utils.FIREBASE_DATABASE_DATE_FORMAT
 import com.javilena87.fichaje.utils.FIREBASE_DATABASE_DAYTYPE_KEY
 import com.javilena87.fichaje.utils.FIREBASE_DATABASE_DAYTYPE_VALUE_HOLYDAY
@@ -13,7 +14,7 @@ import kotlin.coroutines.suspendCoroutine
 
 class FirebaseDataSource(private val reference: DatabaseReference) {
 
-    suspend fun getHolidayFromFirebase(calendar: Calendar): FirebaseHolidaysDatabaseValueResult =
+    suspend fun getHolidayFromFirebase(calendar: Calendar): NationalHolidaysDatabaseValueResult =
         suspendCoroutine { cont ->
             val format = SimpleDateFormat(
                 FIREBASE_DATABASE_DATE_FORMAT,
@@ -27,33 +28,17 @@ class FirebaseDataSource(private val reference: DatabaseReference) {
             child.get().addOnSuccessListener {
                 if (FIREBASE_DATABASE_DAYTYPE_VALUE_HOLYDAY.equals(it.value)) {
                     cont.resume(
-                        FirebaseHolidaysDatabaseValueResult.NotValid
+                        NationalHolidaysDatabaseValueResult.NotValid
                     )
                 } else {
                     cont.resume(
-                        FirebaseHolidaysDatabaseValueResult.Success(
+                        NationalHolidaysDatabaseValueResult.Success(
                             calendar.timeInMillis
                         )
                     )
                 }
             }.addOnFailureListener {
-                cont.resume(FirebaseHolidaysDatabaseValueResult.Error(calendar.timeInMillis))
+                cont.resume(NationalHolidaysDatabaseValueResult.Error(calendar.timeInMillis))
             }
         }
-}
-
-sealed class FirebaseHolidaysDatabaseValueResult {
-    class Success(val validTime: Long) : FirebaseHolidaysDatabaseValueResult()
-    object NotValid :
-        FirebaseHolidaysDatabaseValueResult()
-
-    class Error(val currentTime: Long) : FirebaseHolidaysDatabaseValueResult()
-}
-
-sealed class FirebaseUsernameDatabaseValueResult {
-    object Success :
-        FirebaseUsernameDatabaseValueResult()
-
-    object Error :
-        FirebaseUsernameDatabaseValueResult()
 }

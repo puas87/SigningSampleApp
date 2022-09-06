@@ -1,2 +1,3 @@
-# SigningSampleApp
-Simple app for automate companies signing process
+# Fichaje
+
+Application developed to facilitate signing operations (entry and exit) for users of a certain company.

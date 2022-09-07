@@ -9,7 +9,7 @@ import javax.inject.Singleton
 
 
 @Singleton
-class DefaultFichajeRepository @Inject constructor(
+class FichajeRepositoryImpl @Inject constructor(
     private val fichajeApi: FichajeApi
 ) : FichajeRepository {
 

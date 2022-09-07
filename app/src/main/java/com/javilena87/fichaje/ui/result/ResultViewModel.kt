@@ -4,10 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.javilena87.fichaje.data.FichajeRepository
+import com.javilena87.fichaje.data.FichajeSharedPrefs
+import com.javilena87.fichaje.data.HolidayRepository
 import com.javilena87.fichaje.data.NationalHolidaysDatabaseValueResult
-import com.javilena87.fichaje.data.prefs.FichajeSharedPrefs
-import com.javilena87.fichaje.data.repository.DefaultFichajeRepository
-import com.javilena87.fichaje.data.repository.DefaultHolidayRepository
+import com.javilena87.fichaje.data.prefs.FichajeSharedPrefsImpl
+import com.javilena87.fichaje.di.DatabaseSource
+import com.javilena87.fichaje.di.PreferencesSource
+import com.javilena87.fichaje.di.RemoteSource
 import com.javilena87.fichaje.ui.result.model.ResultAlarmState
 import com.javilena87.fichaje.ui.result.model.ResultEnterViewState
 import com.javilena87.fichaje.ui.result.model.ResultExitViewState
@@ -23,9 +27,9 @@ const val VALID_CHECK_OUT = "check out"
 
 @HiltViewModel
 class ResultViewModel @Inject constructor(
-    private val fichajeRepository: DefaultFichajeRepository,
-    private val fichajeSharedPrefs: FichajeSharedPrefs,
-    private val holidayRepository: DefaultHolidayRepository
+    @RemoteSource private val fichajeRepository: FichajeRepository,
+    @DatabaseSource private val holidayRepository: HolidayRepository,
+    @PreferencesSource private val fichajeSharedPrefs: FichajeSharedPrefs
 ) :
     ViewModel() {
 

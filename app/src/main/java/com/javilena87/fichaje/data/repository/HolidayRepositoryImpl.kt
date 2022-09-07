@@ -10,7 +10,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class DefaultHolidayRepository @Inject constructor(
+class HolidayRepositoryImpl @Inject constructor(
     @HolidaysSource private val holidayDataSource: DefaultDataSource,
 ) : HolidayRepository {
 

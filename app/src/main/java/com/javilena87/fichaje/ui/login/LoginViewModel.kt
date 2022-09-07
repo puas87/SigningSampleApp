@@ -5,17 +5,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.javilena87.fichaje.data.FichajeRepository
+import com.javilena87.fichaje.data.FichajeSharedPrefs
 import com.javilena87.fichaje.data.model.UserData
-import com.javilena87.fichaje.data.prefs.FichajeSharedPrefs
-import com.javilena87.fichaje.data.repository.DefaultFichajeRepository
+import com.javilena87.fichaje.data.prefs.FichajeSharedPrefsImpl
+import com.javilena87.fichaje.di.PreferencesSource
+import com.javilena87.fichaje.di.RemoteSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val fichajeRepository: DefaultFichajeRepository,
-    private val fichajeSharedPreferences: FichajeSharedPrefs
+    @RemoteSource private val fichajeRepository: FichajeRepository,
+    @PreferencesSource private val fichajeSharedPreferences: FichajeSharedPrefs
 ) : ViewModel() {
 
     private val _loginForm = MutableLiveData<LoginFormState>()

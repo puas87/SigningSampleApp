@@ -3,11 +3,15 @@ package com.javilena87.fichaje.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import com.javilena87.fichaje.data.FichajeRepository
+import com.javilena87.fichaje.data.FichajeSharedPrefs
+import com.javilena87.fichaje.data.HolidayRepository
 import com.javilena87.fichaje.data.NationalHolidaysDatabaseValueResult
 import com.javilena87.fichaje.data.model.SigningData
-import com.javilena87.fichaje.data.prefs.FichajeSharedPrefs
-import com.javilena87.fichaje.data.repository.DefaultFichajeRepository
-import com.javilena87.fichaje.data.repository.DefaultHolidayRepository
+import com.javilena87.fichaje.data.prefs.FichajeSharedPrefsImpl
+import com.javilena87.fichaje.di.DatabaseSource
+import com.javilena87.fichaje.di.PreferencesSource
+import com.javilena87.fichaje.di.RemoteSource
 import com.javilena87.fichaje.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -22,12 +26,15 @@ const val CHANNEL_ID = "fichaje_channel_id"
 @AndroidEntryPoint
 class FichajeReceiver : BroadcastReceiver() {
 
+    @RemoteSource
     @Inject
-    lateinit var fichajeRepository: DefaultFichajeRepository
+    lateinit var fichajeRepository: FichajeRepository
 
+    @DatabaseSource
     @Inject
-    lateinit var holidayRepository: DefaultHolidayRepository
+    lateinit var holidayRepository: HolidayRepository
 
+    @PreferencesSource
     @Inject
     lateinit var fichajeSharedPrefs: FichajeSharedPrefs
 

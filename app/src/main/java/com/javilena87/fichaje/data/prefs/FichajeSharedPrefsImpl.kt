@@ -1,6 +1,7 @@
 package com.javilena87.fichaje.data.prefs
 
 import android.content.SharedPreferences
+import com.javilena87.fichaje.data.FichajeSharedPrefs
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -16,63 +17,63 @@ const val USERNAME_KEY = "signing_username"
 const val PASSWORD_KEY = "signing_password"
 
 @Singleton
-class FichajeSharedPrefs @Inject constructor(
+class FichajeSharedPrefsImpl @Inject constructor(
     private val fichajeSecureShared: SharedPreferences
-){
+) : FichajeSharedPrefs {
 
-    fun setUserData(userName: String, password: String) {
+    override fun setUserData(userName: String, password: String) {
         setUserName(userName)
         setPassword(password)
     }
 
-    fun setUserName(userName: String) {
+    override fun setUserName(userName: String) {
         with(fichajeSecureShared.edit()) {
             putString(USERNAME_KEY, userName)
             apply()
         }
     }
 
-    fun setPassword(password: String) {
+    override fun setPassword(password: String) {
         with(fichajeSecureShared.edit()) {
             putString(PASSWORD_KEY, password)
             apply()
         }
     }
 
-    fun getUsername(fallback: String = ""): String {
+    override fun getUsername(fallback: String): String {
         return fichajeSecureShared.getString(USERNAME_KEY, fallback)!!
     }
 
-    fun getPassword(fallback: String = ""): String {
+    override fun getPassword(fallback: String): String {
         return fichajeSecureShared.getString(PASSWORD_KEY, fallback)!!
     }
 
-    fun getAlarmState(): Boolean {
+    override fun getAlarmState(): Boolean {
         return fichajeSecureShared.getBoolean(ALARM_STATE_KEY, false)
     }
 
-    fun setAlarmState(checked: Boolean) {
+    override fun setAlarmState(checked: Boolean) {
         with(fichajeSecureShared.edit()) {
             putBoolean(ALARM_STATE_KEY, checked)
             apply()
         }
     }
 
-    fun setEntryRegister() {
+    override fun setEntryRegister() {
         with(fichajeSecureShared.edit()) {
             putString(LAST_SIGNING_OPERATION_KEY, LAST_SIGNING_OPERATION_ENTRY_VALUE)
             apply()
         }
     }
 
-    fun setExitRegister() {
+    override fun setExitRegister() {
         with(fichajeSecureShared.edit()) {
             putString(LAST_SIGNING_OPERATION_KEY, LAST_SIGNING_OPERATION_EXIT_VALUE)
             apply()
         }
     }
 
-    fun setAlarmRegister(hour: Int, minute: Int, enter: Boolean) {
+    override fun setAlarmRegister(hour: Int, minute: Int, enter: Boolean) {
         with(fichajeSecureShared.edit()) {
             putInt(getAlarmHourKey(enter), hour)
             putInt(getAlarmMinuteKey(enter), minute)
@@ -80,19 +81,19 @@ class FichajeSharedPrefs @Inject constructor(
         }
     }
 
-    private fun getAlarmMinuteKey(enter: Boolean): String {
+    override fun getAlarmMinuteKey(enter: Boolean): String {
         return if (enter) INITIAL_ALARM_MINUTE_KEY else END_ALARM_MINUTE_KEY
     }
 
-    private fun getAlarmHourKey(enter: Boolean): String {
+    override fun getAlarmHourKey(enter: Boolean): String {
         return if (enter) INITIAL_ALARM_HOUR_KEY else END_ALARM_HOUR_KEY
     }
 
-    fun getHourAlarm(enter: Boolean): Int {
+    override fun getHourAlarm(enter: Boolean): Int {
         return fichajeSecureShared.getInt(getAlarmHourKey(enter), if (enter) 8 else 17)
     }
 
-    fun getMinuteAlarm(enter: Boolean): Int {
+    override fun getMinuteAlarm(enter: Boolean): Int {
         return fichajeSecureShared.getInt(getAlarmMinuteKey(enter), if (enter) 10 else 30)
     }
 

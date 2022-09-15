@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.javilena87.fichaje.data.FichajeSharedPrefs
-import com.javilena87.fichaje.data.prefs.FichajeSharedPrefsImpl
 import com.javilena87.fichaje.di.PreferencesSource
 import com.javilena87.fichaje.ui.hour.model.HourEntryTimerState
 import com.javilena87.fichaje.ui.hour.model.HourExitTimerState

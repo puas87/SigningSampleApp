@@ -8,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.javilena87.fichaje.data.FichajeRepository
 import com.javilena87.fichaje.data.FichajeSharedPrefs
 import com.javilena87.fichaje.data.model.UserData
-import com.javilena87.fichaje.data.prefs.FichajeSharedPrefsImpl
 import com.javilena87.fichaje.di.PreferencesSource
 import com.javilena87.fichaje.di.RemoteSource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -41,7 +40,7 @@ class LoginViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                var result = getSuccessFromResult(
+                val result = getSuccessFromResult(
                     fichajeRepository.login(
                         userName = getUserName(entryUsername),
                         password = if (isPasswordDataChanged(
@@ -93,7 +92,8 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun getSuccessFromResult(result: UserData): Boolean {
-        return result.name.isNotEmpty()    }
+        return result.name.isNotEmpty()
+    }
 
     fun getUserRemembered() {
         if (isUserRememebered()) {
@@ -135,7 +135,7 @@ class LoginViewModel @Inject constructor(
                 && passworRemembered != password
     }
 
-    fun isUserRememebered(): Boolean {
+    private fun isUserRememebered(): Boolean {
         return getUserName().isNotBlank()
     }
 

@@ -8,7 +8,6 @@ import com.javilena87.fichaje.data.FichajeRepository
 import com.javilena87.fichaje.data.FichajeSharedPrefs
 import com.javilena87.fichaje.data.HolidayRepository
 import com.javilena87.fichaje.data.NationalHolidaysDatabaseValueResult
-import com.javilena87.fichaje.data.prefs.FichajeSharedPrefsImpl
 import com.javilena87.fichaje.di.DatabaseSource
 import com.javilena87.fichaje.di.PreferencesSource
 import com.javilena87.fichaje.di.RemoteSource

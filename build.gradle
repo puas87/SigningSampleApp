@@ -37,6 +37,8 @@ ext {
     version_hilt = "2.43.2"
     version_crypto = "1.0.0"
     version_firebase_bom = "30.0.0"
+    version_hamcrest = "1.3"
+    version_coroutines = "1.6.4"
 }
 
 task clean(type: Delete) {

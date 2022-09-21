@@ -16,7 +16,9 @@ import com.javilena87.fichaje.ui.result.model.ResultEnterViewState
 import com.javilena87.fichaje.ui.result.model.ResultExitViewState
 import com.javilena87.fichaje.utils.getDaysToAdd
 import com.javilena87.fichaje.utils.isWeekend
+import com.javilena87.fichaje.utils.setInitialAlarm
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.*
 import javax.inject.Inject
@@ -77,44 +79,9 @@ class ResultViewModel @Inject constructor(
         fichajeSharedPrefs.setAlarmState(checked)
     }
 
-    fun setInitialAlarm() {
-        viewModelScope.launch {
-            val calendar: Calendar = Calendar.getInstance().apply {
-                timeInMillis = System.currentTimeMillis()
-                set(Calendar.HOUR_OF_DAY, fichajeSharedPrefs.getHourAlarm(true))
-                set(Calendar.MINUTE, fichajeSharedPrefs.getMinuteAlarm(true))
-                val currentDay = get(Calendar.DAY_OF_WEEK)
-                if (timeInMillis < System.currentTimeMillis() || isWeekend(currentDay)) {
-                    add(Calendar.DAY_OF_MONTH, getDaysToAdd(currentDay))
-                }
-            }
-            calendar.timeInMillis = getDayFromDB(calendar)
-            _resultAlarmState.value = ResultAlarmState(getDayFromFirebase(calendar))
-        }
-    }
-
-    private suspend fun getDayFromFirebase(calendar: Calendar): Long {
-        when (val result = holidayRepository.getHolidayFromFirebase(calendar)) {
-            is NationalHolidaysDatabaseValueResult.Success -> {
-                return result.validTime
-            }
-            is NationalHolidaysDatabaseValueResult.Error -> {
-                return result.currentTime
-            }
-            is NationalHolidaysDatabaseValueResult.NotValid -> {
-                calendar.add(Calendar.DAY_OF_MONTH, getDaysToAdd(calendar.get(Calendar.DAY_OF_WEEK)))
-                return getDayFromFirebase(calendar)
-            }
-        }
-    }
-
-    private suspend fun getDayFromDB(calendar: Calendar): Long {
-        val resultDB = holidayRepository.getDateIsInRange(calendar.timeInMillis).isEmpty()
-        return if (resultDB) {
-            calendar.timeInMillis
-        } else {
-            calendar.add(Calendar.DAY_OF_MONTH, getDaysToAdd(calendar.get(Calendar.DAY_OF_WEEK)))
-            getDayFromDB(calendar)
+    fun enableAlarm() {
+        setInitialAlarm(viewModelScope, fichajeSharedPrefs, holidayRepository) {
+            _resultAlarmState.value = ResultAlarmState(it)
         }
     }
 

@@ -73,6 +73,10 @@ class FichajeSharedPrefsImpl @Inject constructor(
         }
     }
 
+    override fun getLastRegister(): String {
+        return fichajeSecureShared.getString(LAST_SIGNING_OPERATION_KEY, "")!!
+    }
+
     override fun setAlarmRegister(hour: Int, minute: Int, enter: Boolean) {
         with(fichajeSecureShared.edit()) {
             putInt(getAlarmHourKey(enter), hour)
@@ -81,11 +85,11 @@ class FichajeSharedPrefsImpl @Inject constructor(
         }
     }
 
-    override fun getAlarmMinuteKey(enter: Boolean): String {
+    private fun getAlarmMinuteKey(enter: Boolean): String {
         return if (enter) INITIAL_ALARM_MINUTE_KEY else END_ALARM_MINUTE_KEY
     }
 
-    override fun getAlarmHourKey(enter: Boolean): String {
+    private fun getAlarmHourKey(enter: Boolean): String {
         return if (enter) INITIAL_ALARM_HOUR_KEY else END_ALARM_HOUR_KEY
     }
 

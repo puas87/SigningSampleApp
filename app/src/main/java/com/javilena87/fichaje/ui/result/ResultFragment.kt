@@ -81,7 +81,7 @@ class ResultFragment : Fragment(), View.OnClickListener,
                     if (it) {
                         binding.alarmSwitch.text =
                             getText(R.string.check_alarm_enabled)
-                        resultViewModel.setInitialAlarm()
+                        resultViewModel.enableAlarm()
                     } else {
                         binding.alarmSwitch.text =
                             getText(R.string.check_alarm_disabled)

@@ -9,11 +9,11 @@ class FakeFichajeSharedPrefs constructor(private var listOfMemory: MutableMap<St
     }
 
     override fun setUserName(userName: String) {
-        listOfMemory.put("userName", userName)
+        listOfMemory["userName"] = userName
     }
 
     override fun setPassword(password: String) {
-        listOfMemory.put("password", password)
+        listOfMemory["password"] = password
     }
 
     override fun getUsername(fallback: String): String {
@@ -29,34 +29,35 @@ class FakeFichajeSharedPrefs constructor(private var listOfMemory: MutableMap<St
     }
 
     override fun setAlarmState(checked: Boolean) {
-        listOfMemory.put("alarmState", checked.toString())
+        listOfMemory["alarmState"] = checked.toString()
     }
 
     override fun setEntryRegister() {
-        listOfMemory.put("entry", "true")
+        listOfMemory["LAST_SIGNING_OPERATION_KEY"] = "ENTRY"
     }
 
     override fun setExitRegister() {
-        listOfMemory.put("exit", "true")
+        listOfMemory["LAST_SIGNING_OPERATION_KEY"] = "EXIT"
+    }
+
+    override fun getLastRegister(): String {
+        return listOfMemory["LAST_SIGNING_OPERATION_KEY"]!!
     }
 
     override fun setAlarmRegister(hour: Int, minute: Int, enter: Boolean) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getAlarmMinuteKey(enter: Boolean): String {
-        TODO("Not yet implemented")
-    }
-
-    override fun getAlarmHourKey(enter: Boolean): String {
-        TODO("Not yet implemented")
+        val alarmMinuteRegisterKey = if(enter) INITIAL_ALARM_MINUTE_KEY else END_ALARM_MINUTE_KEY
+        val alarmHourRegisterKey = if(enter) INITIAL_ALARM_HOUR_KEY else END_ALARM_HOUR_KEY
+        listOfMemory[alarmMinuteRegisterKey] =  minute.toString()
+        listOfMemory[alarmHourRegisterKey] =  hour.toString()
     }
 
     override fun getHourAlarm(enter: Boolean): Int {
-        TODO("Not yet implemented")
+        val alarmHourRegisterKey = if(enter) INITIAL_ALARM_HOUR_KEY else END_ALARM_HOUR_KEY
+        return listOfMemory[alarmHourRegisterKey]?.toInt() ?: 0
     }
 
     override fun getMinuteAlarm(enter: Boolean): Int {
-        TODO("Not yet implemented")
+        val alarmMinuteRegisterKey = if(enter) INITIAL_ALARM_MINUTE_KEY else END_ALARM_MINUTE_KEY
+        return listOfMemory[alarmMinuteRegisterKey]?.toInt() ?: 0
     }
 }

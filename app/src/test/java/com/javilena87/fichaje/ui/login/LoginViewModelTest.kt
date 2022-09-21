@@ -23,7 +23,7 @@ internal class LoginViewModelTest {
 
     private var fakeRepository: FakeFichajeRepository = FakeFichajeRepository()
     private var fakeExceptionRepository: FakeFichajeRepository = FakeFichajeRepository(exception = true)
-    private var fakeErrorRepository: FakeFichajeRepository = FakeFichajeRepository(userEmpty = true)
+    private var fakeErrorRepository: FakeFichajeRepository = FakeFichajeRepository(requestFailure = true)
     private var fakeSharedPrefs: FakeFichajeSharedPrefs = FakeFichajeSharedPrefs()
 
     @get:Rule

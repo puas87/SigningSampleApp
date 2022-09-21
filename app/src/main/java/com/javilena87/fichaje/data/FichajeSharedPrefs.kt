@@ -10,9 +10,8 @@ interface FichajeSharedPrefs {
     fun setAlarmState(checked: Boolean)
     fun setEntryRegister()
     fun setExitRegister()
+    fun getLastRegister(): String
     fun setAlarmRegister(hour: Int, minute: Int, enter: Boolean)
-    fun getAlarmMinuteKey(enter: Boolean): String
-    fun getAlarmHourKey(enter: Boolean): String
     fun getHourAlarm(enter: Boolean): Int
     fun getMinuteAlarm(enter: Boolean): Int
 }

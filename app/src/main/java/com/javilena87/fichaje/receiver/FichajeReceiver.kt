@@ -44,12 +44,12 @@ class FichajeReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == "android.intent.action.BOOT_COMPLETED") {
             if (fichajeSharedPrefs.getAlarmState()) {
-                setInitialAlarm(context)
+                enableAlarm(context)
             }
         }
         if (intent.action == ALARM_DELAYED_ACTION_VALUE) {
             //login and exit
-            setInitialAlarm(context)
+            enableAlarm(context)
             loginAndExit(context)
         }
         if (intent.action == ALARM_SCHEDULED_ACTION_VALUE) {
@@ -149,44 +149,9 @@ class FichajeReceiver : BroadcastReceiver() {
     }
 
 
-    private fun setInitialAlarm(context: Context) {
-        corutineScope.launch {
-            val calendar: Calendar = Calendar.getInstance().apply {
-                timeInMillis = System.currentTimeMillis()
-                set(Calendar.HOUR_OF_DAY, fichajeSharedPrefs.getHourAlarm(true))
-                set(Calendar.MINUTE, fichajeSharedPrefs.getMinuteAlarm(true))
-                val currentDay = get(Calendar.DAY_OF_WEEK)
-                if (timeInMillis < System.currentTimeMillis() || isWeekend(currentDay)) {
-                    add(Calendar.DAY_OF_MONTH, getDaysToAdd(currentDay))
-                }
-            }
-            calendar.timeInMillis = getDayFromDB(calendar)
-            initAlarm(context, getDayFromFirebase(calendar))
-        }
-    }
-
-    private suspend fun getDayFromFirebase(calendar: Calendar): Long {
-        when (val result = holidayRepository.getHolidayFromFirebase(calendar)) {
-            is NationalHolidaysDatabaseValueResult.Success -> {
-                return result.validTime
-            }
-            is NationalHolidaysDatabaseValueResult.Error -> {
-                return result.currentTime
-            }
-            is NationalHolidaysDatabaseValueResult.NotValid -> {
-                calendar.add(Calendar.DAY_OF_MONTH, getDaysToAdd(calendar.get(Calendar.DAY_OF_WEEK)))
-                return getDayFromFirebase(calendar)
-            }
-        }
-    }
-
-    private suspend fun getDayFromDB(calendar: Calendar): Long {
-        val resultDB = holidayRepository.getDateIsInRange(calendar.timeInMillis).isEmpty()
-        return if (resultDB) {
-            calendar.timeInMillis
-        } else {
-            calendar.add(Calendar.DAY_OF_MONTH, getDaysToAdd(calendar.get(Calendar.DAY_OF_WEEK)))
-            getDayFromDB(calendar)
+    private fun enableAlarm(context: Context) {
+        setInitialAlarm(corutineScope, fichajeSharedPrefs, holidayRepository) {
+            initAlarm(context, it)
         }
     }
 

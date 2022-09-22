@@ -35,13 +35,14 @@ class HourViewModel @Inject constructor(
     }
 
     private fun initTimer(enter: Boolean) {
+        val hourAlarm = fichajeSharedPrefs.getHourAlarm(enter)
+        val minuteAlarm = fichajeSharedPrefs.getMinuteAlarm(enter)
         if (enter) {
-            _resultEntryTimerState.value = HourEntryTimerState(fichajeSharedPrefs.getHourAlarm(enter),
-                fichajeSharedPrefs.getMinuteAlarm(enter))
+            _resultEntryTimerState.value = HourEntryTimerState(hourAlarm,
+                minuteAlarm)
         } else {
-            _resultExitTimerState.value = HourExitTimerState(fichajeSharedPrefs.getHourAlarm(
-                enter),
-                fichajeSharedPrefs.getMinuteAlarm(enter))
+            _resultExitTimerState.value = HourExitTimerState(hourAlarm,
+                minuteAlarm)
         }
     }
 

@@ -15,6 +15,10 @@ const val LAST_SIGNING_OPERATION_ENTRY_VALUE = "ENTRY"
 const val LAST_SIGNING_OPERATION_EXIT_VALUE = "EXIT"
 const val USERNAME_KEY = "signing_username"
 const val PASSWORD_KEY = "signing_password"
+const val DEFAULT_INITIAL_ALARM_HOUR = 8
+const val DEFAULT_FINAL_ALARM_HOUR = 17
+const val DEFAULT_INITIAL_ALARM_MINUTE = 10
+const val DEFAULT_EXIT_ALARM_MINUTE = 30
 
 @Singleton
 class FichajeSharedPrefsImpl @Inject constructor(
@@ -94,11 +98,11 @@ class FichajeSharedPrefsImpl @Inject constructor(
     }
 
     override fun getHourAlarm(enter: Boolean): Int {
-        return fichajeSecureShared.getInt(getAlarmHourKey(enter), if (enter) 8 else 17)
+        return fichajeSecureShared.getInt(getAlarmHourKey(enter), if (enter) DEFAULT_INITIAL_ALARM_HOUR else DEFAULT_FINAL_ALARM_HOUR)
     }
 
     override fun getMinuteAlarm(enter: Boolean): Int {
-        return fichajeSecureShared.getInt(getAlarmMinuteKey(enter), if (enter) 10 else 30)
+        return fichajeSecureShared.getInt(getAlarmMinuteKey(enter), if (enter) DEFAULT_INITIAL_ALARM_MINUTE else DEFAULT_EXIT_ALARM_MINUTE)
     }
 
 }

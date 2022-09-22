@@ -53,11 +53,11 @@ class FakeFichajeSharedPrefs constructor(private var listOfMemory: MutableMap<St
 
     override fun getHourAlarm(enter: Boolean): Int {
         val alarmHourRegisterKey = if(enter) INITIAL_ALARM_HOUR_KEY else END_ALARM_HOUR_KEY
-        return listOfMemory[alarmHourRegisterKey]?.toInt() ?: 0
+        return listOfMemory[alarmHourRegisterKey]?.toInt() ?: if (enter) DEFAULT_INITIAL_ALARM_HOUR else DEFAULT_FINAL_ALARM_HOUR
     }
 
     override fun getMinuteAlarm(enter: Boolean): Int {
         val alarmMinuteRegisterKey = if(enter) INITIAL_ALARM_MINUTE_KEY else END_ALARM_MINUTE_KEY
-        return listOfMemory[alarmMinuteRegisterKey]?.toInt() ?: 0
+        return listOfMemory[alarmMinuteRegisterKey]?.toInt() ?: if (enter) DEFAULT_INITIAL_ALARM_MINUTE else DEFAULT_EXIT_ALARM_MINUTE
     }
 }

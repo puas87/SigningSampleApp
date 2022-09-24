@@ -2,19 +2,16 @@ package com.javilena87.fichaje.ui.login
 
 import android.view.View
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.javilena87.fichaje.MainCoroutineRule
 import com.javilena87.fichaje.data.prefs.FakeFichajeSharedPrefs
 import com.javilena87.fichaje.data.repository.FakeFichajeRepository
 import com.javilena87.fichaje.getOrAwaitValue
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.*
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertFalse
-import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -30,22 +27,8 @@ internal class LoginViewModelTest {
     var instantExecutorRule = InstantTaskExecutorRule()
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val testScheduler = TestCoroutineScheduler()
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val testDispatcher = UnconfinedTestDispatcher(testScheduler)
-
-    @ExperimentalCoroutinesApi
-    @Before
-    fun setupDispatcher() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @OptIn(ExperimentalCoroutinesApi::class)
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-    }
+    @get:Rule
+    var mainCoroutineRule = MainCoroutineRule()
 
     @Test
     fun `given an login result not null when init result then login result value is null`() {

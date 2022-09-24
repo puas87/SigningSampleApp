@@ -6,16 +6,16 @@ import com.javilena87.fichaje.utils.FIREBASE_DATABASE_DATE_FORMAT
 import com.javilena87.fichaje.utils.FIREBASE_DATABASE_DAYTYPE_KEY
 import com.javilena87.fichaje.utils.FIREBASE_DATABASE_DAYTYPE_VALUE_HOLYDAY
 import com.javilena87.fichaje.utils.FIREBASE_DATABASE_NAME
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 
 class FirebaseDataSource(private val reference: DatabaseReference) {
 
     suspend fun getHolidayFromFirebase(calendar: Calendar): NationalHolidaysDatabaseValueResult =
-        suspendCoroutine { cont ->
+        suspendCancellableCoroutine { cont ->
             val format = SimpleDateFormat(
                 FIREBASE_DATABASE_DATE_FORMAT,
                 Locale.getDefault()

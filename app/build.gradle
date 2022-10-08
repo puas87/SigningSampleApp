@@ -1,0 +1,110 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'androidx.navigation.safeargs.kotlin'
+    id 'kotlin-kapt'
+    id 'dagger.hilt.android.plugin'
+    id 'com.google.gms.google-services'
+}
+
+android {
+    compileSdk 32
+
+    defaultConfig {
+        applicationId "com.javilena87.fichaje"
+        minSdk 23
+        targetSdk 31
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+    buildFeatures {
+        viewBinding true
+    }
+    namespace 'com.javilena87.fichaje'
+
+    dataBinding {
+        enabled = true
+    }
+}
+
+dependencies {
+
+    implementation "androidx.core:core-ktx:$rootProject.ext.version_core"
+    implementation "androidx.appcompat:appcompat:$rootProject.ext.version_appcompat"
+    implementation "com.google.android.material:material:$rootProject.ext.version_material"
+    implementation "androidx.annotation:annotation:$rootProject.ext.version_annotation"
+    implementation "androidx.constraintlayout:constraintlayout:$rootProject.ext.version_constraint_layout"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.ext.version_livedata_ktx"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.ext.version_viewmodel_ktx"
+    implementation "androidx.fragment:fragment-ktx:$rootProject.ext.version_fragment_ktx"
+
+    //Notifications
+    implementation "androidx.core:core:$rootProject.ext.version_core"
+
+    //Navigation
+    implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.ext.version_navigation"
+    implementation "androidx.navigation:navigation-ui-ktx:$rootProject.ext.version_navigation"
+
+    //Room
+    implementation "androidx.room:room-runtime:$rootProject.ext.version_room"
+    implementation "androidx.room:room-ktx:$rootProject.ext.version_room"
+    kapt "androidx.room:room-compiler:$rootProject.ext.version_room"
+
+    // Feature module Support
+    implementation "androidx.navigation:navigation-dynamic-features-fragment:$rootProject.ext.version_navigation"
+    implementation "androidx.legacy:legacy-support-v4:$rootProject.ext.version_legacy"
+
+    // Testing Navigation
+    androidTestImplementation "androidx.navigation:navigation-testing:$rootProject.ext.version_navigation"
+
+    // Retrofit for networking
+    implementation "com.squareup.retrofit2:retrofit:$rootProject.ext.version_retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$rootProject.ext.version_retrofit"
+    implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:$rootProject.ext.version_retrofit_coroutines_adapter"
+
+    // Moshi for parsing the JSON format
+    implementation "com.squareup.moshi:moshi:$rootProject.ext.version_moshi"
+    implementation "com.squareup.moshi:moshi-kotlin:$rootProject.ext.version_moshi"
+
+    //Hilt
+    implementation "com.google.dagger:hilt-android:$rootProject.ext.version_hilt"
+    kapt "com.google.dagger:hilt-android-compiler:$rootProject.ext.version_hilt"
+    // For instrumentation tests
+    androidTestImplementation  "com.google.dagger:hilt-android-testing:$rootProject.ext.version_hilt"
+    kaptAndroidTest "com.google.dagger:hilt-compiler:$rootProject.ext.version_hilt"
+    // For local unit tests
+    testImplementation "com.google.dagger:hilt-android-testing:$rootProject.ext.version_hilt"
+    kaptTest "com.google.dagger:hilt-compiler:$rootProject.ext.version_hilt"
+
+    //Test
+    testImplementation "junit:junit:4.13.2"
+    androidTestImplementation "androidx.test.ext:junit:1.1.3"
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.4.0"
+    testImplementation "org.hamcrest:hamcrest-all:$rootProject.ext.version_hamcrest"
+    testImplementation "androidx.arch.core:core-testing:2.1.0"
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$rootProject.ext.version_coroutines"
+
+
+    //Secured Shared Prefernces
+    implementation "androidx.security:security-crypto:$rootProject.ext.version_crypto"
+
+    //Firebase
+    implementation platform("com.google.firebase:firebase-bom:$rootProject.ext.version_firebase_bom")
+    implementation 'com.google.firebase:firebase-database-ktx'
+}

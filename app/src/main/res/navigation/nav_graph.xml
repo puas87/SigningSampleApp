@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.javilena87.fichaje.ui.login.LoginFragment"
+        android:label="@string/login_fragment_title"
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_loginFragment_to_resultFragment2"
+            app:destination="@id/resultFragment2"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/resultFragment2"
+        android:name="com.javilena87.fichaje.ui.result.ResultFragment"
+        android:label="@string/buttons_fragment_title"
+        tools:layout="@layout/result_fragment" />
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="com.javilena87.fichaje.ui.calendar.CalendarFragment"
+        android:label="@string/calendar_fragment_title"
+        tools:layout="@layout/calendar_fragment" />
+
+    <action
+        android:id="@+id/action_global_calendarFragment2"
+        app:destination="@id/calendarFragment" />
+    <fragment
+        android:id="@+id/hourFragment"
+        android:name="com.javilena87.fichaje.ui.hour.HourFragment"
+        android:label="@string/hours"
+        tools:layout="@layout/hour_fragment" />
+
+    <action
+        android:id="@+id/action_global_hourFragment"
+        app:destination="@id/hourFragment" />
+</navigation>

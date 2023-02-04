@@ -4,8 +4,8 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import com.javilena87.fichaje.data.FichajeSharedPrefs
-import com.javilena87.fichaje.data.HolidayRepository
+import com.javilena87.fichaje.domain.FichajeSharedPrefsRepository
+import com.javilena87.fichaje.domain.HolidayRepository
 import com.javilena87.fichaje.data.NationalHolidaysDatabaseValueResult
 import com.javilena87.fichaje.receiver.FichajeReceiver
 import kotlinx.coroutines.CoroutineScope
@@ -21,11 +21,11 @@ const val FIREBASE_DATABASE_DATE_FORMAT: String = "dd-MM-yyyy"
 const val ALARM_SCHEDULED_ACTION_VALUE: String = "SCHEDULED_ACTION"
 const val ALARM_DELAYED_ACTION_VALUE: String = "DELAYED_ACTION"
 
-fun setInitialAlarm(scope: CoroutineScope, fichajeSharedPrefs: FichajeSharedPrefs, holidayRepository: HolidayRepository, result: (miliseconds: Long) -> Unit) {
+fun setInitialAlarm(scope: CoroutineScope, fichajeSharedPrefsRepository: FichajeSharedPrefsRepository, holidayRepository: HolidayRepository, result: (miliseconds: Long) -> Unit) {
     val calendar: Calendar = Calendar.getInstance().apply {
         timeInMillis = System.currentTimeMillis()
-        set(Calendar.HOUR_OF_DAY, fichajeSharedPrefs.getHourAlarm(true))
-        set(Calendar.MINUTE, fichajeSharedPrefs.getMinuteAlarm(true))
+        set(Calendar.HOUR_OF_DAY, fichajeSharedPrefsRepository.getHourAlarm(true))
+        set(Calendar.MINUTE, fichajeSharedPrefsRepository.getMinuteAlarm(true))
         val currentDay = get(Calendar.DAY_OF_WEEK)
         if (timeInMillis < System.currentTimeMillis() || isWeekend(currentDay)) {
             add(Calendar.DAY_OF_MONTH, getDaysToAdd(currentDay))

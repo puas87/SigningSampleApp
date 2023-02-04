@@ -1,7 +1,7 @@
 package com.javilena87.fichaje.data.remote
 
-import com.javilena87.fichaje.data.model.SigningData
-import com.javilena87.fichaje.data.model.UserData
+import com.javilena87.fichaje.domain.model.SigningData
+import com.javilena87.fichaje.domain.model.UserData
 import retrofit2.http.*
 
 interface FichajeApi {

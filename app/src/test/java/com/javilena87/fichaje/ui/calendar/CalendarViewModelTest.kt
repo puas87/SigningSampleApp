@@ -5,6 +5,7 @@ import com.javilena87.fichaje.MainCoroutineRule
 import com.javilena87.fichaje.data.db.HolidayReg
 import com.javilena87.fichaje.data.repository.FakeHolidayRepository
 import com.javilena87.fichaje.getOrAwaitValue
+import com.javilena87.fichaje.presentation.calendar.CalendarViewModel
 import com.javilena87.fichaje.utils.setEndOfDay
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking

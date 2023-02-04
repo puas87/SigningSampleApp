@@ -1,6 +1,6 @@
 package com.javilena87.fichaje.data.repository
 
-import com.javilena87.fichaje.data.HolidayRepository
+import com.javilena87.fichaje.domain.HolidayRepository
 import com.javilena87.fichaje.data.NationalHolidaysDatabaseValueResult
 import com.javilena87.fichaje.data.db.HolidayReg
 import java.util.*

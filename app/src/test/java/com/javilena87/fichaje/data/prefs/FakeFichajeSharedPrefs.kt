@@ -1,8 +1,10 @@
 package com.javilena87.fichaje.data.prefs
 
-import com.javilena87.fichaje.data.FichajeSharedPrefs
+import com.javilena87.fichaje.data.repository.*
+import com.javilena87.fichaje.domain.FichajeSharedPrefsRepository
 
-class FakeFichajeSharedPrefs constructor(private var listOfMemory: MutableMap<String, String?> = mutableMapOf()) : FichajeSharedPrefs{
+class FakeFichajeSharedPrefs constructor(private var listOfMemory: MutableMap<String, String?> = mutableMapOf()) :
+    FichajeSharedPrefsRepository {
     override fun setUserData(userName: String, password: String) {
         setUserName(userName)
         setPassword(password)

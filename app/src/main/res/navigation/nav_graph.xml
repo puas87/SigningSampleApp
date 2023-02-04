@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.javilena87.fichaje.ui.login.LoginFragment"
+        android:name="com.javilena87.fichaje.presentation.login.LoginFragment"
         android:label="@string/login_fragment_title"
         tools:layout="@layout/fragment_login">
         <action
@@ -18,12 +18,12 @@
     </fragment>
     <fragment
         android:id="@+id/resultFragment2"
-        android:name="com.javilena87.fichaje.ui.result.ResultFragment"
+        android:name="com.javilena87.fichaje.presentation.result.ResultFragment"
         android:label="@string/buttons_fragment_title"
         tools:layout="@layout/result_fragment" />
     <fragment
         android:id="@+id/calendarFragment"
-        android:name="com.javilena87.fichaje.ui.calendar.CalendarFragment"
+        android:name="com.javilena87.fichaje.presentation.calendar.CalendarFragment"
         android:label="@string/calendar_fragment_title"
         tools:layout="@layout/calendar_fragment" />
 
@@ -32,7 +32,7 @@
         app:destination="@id/calendarFragment" />
     <fragment
         android:id="@+id/hourFragment"
-        android:name="com.javilena87.fichaje.ui.hour.HourFragment"
+        android:name="com.javilena87.fichaje.presentation.hour.HourFragment"
         android:label="@string/hours"
         tools:layout="@layout/hour_fragment" />
 

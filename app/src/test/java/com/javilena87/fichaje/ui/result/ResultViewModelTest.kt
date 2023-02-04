@@ -5,6 +5,7 @@ import com.javilena87.fichaje.data.prefs.FakeFichajeSharedPrefs
 import com.javilena87.fichaje.data.repository.FakeFichajeRepository
 import com.javilena87.fichaje.data.repository.FakeHolidayRepository
 import com.javilena87.fichaje.getOrAwaitValue
+import com.javilena87.fichaje.presentation.result.ResultViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineScheduler

@@ -1,8 +1,8 @@
 package com.javilena87.fichaje.data.repository
 
-import com.javilena87.fichaje.data.FichajeRepository
-import com.javilena87.fichaje.data.model.SigningData
-import com.javilena87.fichaje.data.model.UserData
+import com.javilena87.fichaje.domain.FichajeRepository
+import com.javilena87.fichaje.domain.model.SigningData
+import com.javilena87.fichaje.domain.model.UserData
 import com.javilena87.fichaje.data.remote.FichajeApi
 import javax.inject.Inject
 import javax.inject.Singleton

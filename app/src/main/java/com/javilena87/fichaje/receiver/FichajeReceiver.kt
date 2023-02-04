@@ -3,11 +3,10 @@ package com.javilena87.fichaje.receiver
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.javilena87.fichaje.data.FichajeRepository
-import com.javilena87.fichaje.data.FichajeSharedPrefs
-import com.javilena87.fichaje.data.HolidayRepository
-import com.javilena87.fichaje.data.NationalHolidaysDatabaseValueResult
-import com.javilena87.fichaje.data.model.SigningData
+import com.javilena87.fichaje.domain.FichajeRepository
+import com.javilena87.fichaje.domain.FichajeSharedPrefsRepository
+import com.javilena87.fichaje.domain.HolidayRepository
+import com.javilena87.fichaje.domain.model.SigningData
 import com.javilena87.fichaje.di.DatabaseSource
 import com.javilena87.fichaje.di.PreferencesSource
 import com.javilena87.fichaje.di.RemoteSource
@@ -35,7 +34,7 @@ class FichajeReceiver : BroadcastReceiver() {
 
     @PreferencesSource
     @Inject
-    lateinit var fichajeSharedPrefs: FichajeSharedPrefs
+    lateinit var fichajeSharedPrefsRepository: FichajeSharedPrefsRepository
 
     private val viewModelJob = Job()
 
@@ -43,7 +42,7 @@ class FichajeReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == "android.intent.action.BOOT_COMPLETED") {
-            if (fichajeSharedPrefs.getAlarmState()) {
+            if (fichajeSharedPrefsRepository.getAlarmState()) {
                 enableAlarm(context)
             }
         }
@@ -84,8 +83,8 @@ class FichajeReceiver : BroadcastReceiver() {
 
     private fun setTimerValue(enter: Boolean): Calendar {
         val calendarValue = Calendar.getInstance()
-        calendarValue.set(Calendar.HOUR, fichajeSharedPrefs.getHourAlarm(enter))
-        calendarValue.set(Calendar.MINUTE, fichajeSharedPrefs.getMinuteAlarm(enter))
+        calendarValue.set(Calendar.HOUR, fichajeSharedPrefsRepository.getHourAlarm(enter))
+        calendarValue.set(Calendar.MINUTE, fichajeSharedPrefsRepository.getMinuteAlarm(enter))
         return calendarValue
     }
 
@@ -95,8 +94,8 @@ class FichajeReceiver : BroadcastReceiver() {
             if (result) {
                 try {
                     val enterResult =
-                        getSuccessFromResult(fichajeRepository.enter(fichajeSharedPrefs.getUsername()))
-                    if (enterResult) fichajeSharedPrefs.setEntryRegister()
+                        getSuccessFromResult(fichajeRepository.enter(fichajeSharedPrefsRepository.getUsername()))
+                    if (enterResult) fichajeSharedPrefsRepository.setEntryRegister()
                     createNotification(
                         context,
                         enter = true,
@@ -117,8 +116,8 @@ class FichajeReceiver : BroadcastReceiver() {
             if (result) {
                 try {
                     val exitResult =
-                        getSuccessFromResult(fichajeRepository.exit(fichajeSharedPrefs.getUsername()))
-                    if (exitResult) fichajeSharedPrefs.setExitRegister()
+                        getSuccessFromResult(fichajeRepository.exit(fichajeSharedPrefsRepository.getUsername()))
+                    if (exitResult) fichajeSharedPrefsRepository.setExitRegister()
                     createNotification(
                         context,
                         enter = false,
@@ -136,8 +135,8 @@ class FichajeReceiver : BroadcastReceiver() {
     private suspend fun login(): Boolean {
         return try {
             fichajeRepository.login(
-                userName = fichajeSharedPrefs.getUsername(),
-                password = fichajeSharedPrefs.getPassword()
+                userName = fichajeSharedPrefsRepository.getUsername(),
+                password = fichajeSharedPrefsRepository.getPassword()
             ).name.isNotEmpty()
         } catch (e: Exception) {
             false
@@ -150,7 +149,7 @@ class FichajeReceiver : BroadcastReceiver() {
 
 
     private fun enableAlarm(context: Context) {
-        setInitialAlarm(corutineScope, fichajeSharedPrefs, holidayRepository) {
+        setInitialAlarm(corutineScope, fichajeSharedPrefsRepository, holidayRepository) {
             initAlarm(context, it)
         }
     }

@@ -15,6 +15,8 @@ class DoLoginUseCase @Inject constructor(
 
     suspend operator fun invoke(userName: String, password: String): LoginResult {
         try {
+            if (userName.isBlank()) return LoginResult(false, userName)
+            if (password.isBlank()) return LoginResult(false, userName)
             val result = getSuccessFromResult(
                 loginRepository.login(
                     userName = getUserName(userName),

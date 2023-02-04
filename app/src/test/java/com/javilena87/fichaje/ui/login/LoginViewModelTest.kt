@@ -55,6 +55,24 @@ internal class LoginViewModelTest {
     }
 
     @Test
+    fun `given an username empty when login then login result value is false`() {
+        loginViewModelHappyPath.login("", "password")
+
+        val value = loginViewModelHappyPath.loginResult.getOrAwaitValue()
+
+        assertThat(value, `is`(false))
+    }
+
+    @Test
+    fun `given an password empty when login then login result value is false`() {
+        loginViewModelHappyPath.login("username", "")
+
+        val value = loginViewModelHappyPath.loginResult.getOrAwaitValue()
+
+        assertThat(value, `is`(false))
+    }
+
+    @Test
     fun `given an username and password when login then login result value is true`() {
         loginViewModelHappyPath.login("username", "password")
 

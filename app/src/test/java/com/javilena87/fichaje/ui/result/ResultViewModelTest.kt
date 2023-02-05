@@ -12,8 +12,6 @@ import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
-import org.hamcrest.CoreMatchers.`is`
-import org.hamcrest.MatcherAssert
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before

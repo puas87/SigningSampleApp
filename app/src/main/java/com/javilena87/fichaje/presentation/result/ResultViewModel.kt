@@ -4,12 +4,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.javilena87.fichaje.domain.FichajeRepository
-import com.javilena87.fichaje.domain.FichajeSharedPrefsRepository
-import com.javilena87.fichaje.domain.HolidayRepository
 import com.javilena87.fichaje.di.DatabaseSource
 import com.javilena87.fichaje.di.PreferencesSource
 import com.javilena87.fichaje.di.RemoteSource
+import com.javilena87.fichaje.domain.FichajeRepository
+import com.javilena87.fichaje.domain.FichajeSharedPrefsRepository
+import com.javilena87.fichaje.domain.HolidayRepository
 import com.javilena87.fichaje.presentation.result.model.ResultAlarmState
 import com.javilena87.fichaje.presentation.result.model.ResultEnterViewState
 import com.javilena87.fichaje.presentation.result.model.ResultExitViewState

@@ -3,8 +3,8 @@ package com.javilena87.fichaje.presentation.hour
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.javilena87.fichaje.domain.FichajeSharedPrefsRepository
 import com.javilena87.fichaje.di.PreferencesSource
+import com.javilena87.fichaje.domain.FichajeSharedPrefsRepository
 import com.javilena87.fichaje.presentation.hour.model.HourEntryTimerState
 import com.javilena87.fichaje.presentation.hour.model.HourExitTimerState
 import dagger.hilt.android.lifecycle.HiltViewModel

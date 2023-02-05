@@ -1,10 +1,10 @@
 package com.javilena87.fichaje.data.repository
 
 import com.javilena87.fichaje.data.DefaultDataSource
-import com.javilena87.fichaje.domain.HolidayRepository
 import com.javilena87.fichaje.data.NationalHolidaysDatabaseValueResult
 import com.javilena87.fichaje.data.db.HolidayReg
 import com.javilena87.fichaje.di.HolidaysSource
+import com.javilena87.fichaje.domain.HolidayRepository
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton

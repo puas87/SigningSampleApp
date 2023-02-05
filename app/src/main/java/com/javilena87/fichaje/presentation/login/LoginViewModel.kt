@@ -5,7 +5,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.javilena87.fichaje.domain.usecases.*
+import com.javilena87.fichaje.domain.usecases.login.ClearDataUseCase
+import com.javilena87.fichaje.domain.usecases.login.DoLoginUseCase
+import com.javilena87.fichaje.domain.usecases.login.GetUserDataUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -58,7 +60,7 @@ class LoginViewModel @Inject constructor(
 
     fun initUserRemembered() {
         val userData = getUserData()
-        if (userData.userRememebered) {
+        if (userData.isUserRemembered()) {
             _loginForm.value = LoginFormState(
                 userRemembered = userData.userName,
                 userRememberedVisibility = getUserRememberedVisibility(true),

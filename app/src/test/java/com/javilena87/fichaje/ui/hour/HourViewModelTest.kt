@@ -1,7 +1,7 @@
 package com.javilena87.fichaje.ui.hour
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.javilena87.fichaje.data.prefs.*
+import com.javilena87.fichaje.data.prefs.FakeFichajeSharedPrefs
 import com.javilena87.fichaje.data.repository.DEFAULT_EXIT_ALARM_MINUTE
 import com.javilena87.fichaje.data.repository.DEFAULT_FINAL_ALARM_HOUR
 import com.javilena87.fichaje.data.repository.DEFAULT_INITIAL_ALARM_HOUR

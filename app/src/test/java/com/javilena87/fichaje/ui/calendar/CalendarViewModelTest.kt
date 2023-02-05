@@ -8,17 +8,13 @@ import com.javilena87.fichaje.getOrAwaitValue
 import com.javilena87.fichaje.presentation.calendar.CalendarViewModel
 import com.javilena87.fichaje.utils.setEndOfDay
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers
 import org.hamcrest.CoreMatchers.*
-import org.hamcrest.MatcherAssert
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Assert.*
 import org.junit.Rule
 import org.junit.Test
-import java.util.Calendar
+import java.util.*
 
 internal class CalendarViewModelTest {
 

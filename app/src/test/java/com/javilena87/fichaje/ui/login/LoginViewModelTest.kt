@@ -6,6 +6,7 @@ import com.javilena87.fichaje.MainCoroutineRule
 import com.javilena87.fichaje.data.prefs.FakeFichajeSharedPrefs
 import com.javilena87.fichaje.data.repository.FakeFichajeRepository
 import com.javilena87.fichaje.domain.usecases.*
+import com.javilena87.fichaje.domain.usecases.login.*
 import com.javilena87.fichaje.getOrAwaitValue
 import com.javilena87.fichaje.presentation.login.LoginViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -26,13 +27,18 @@ internal class LoginViewModelTest {
     private var fakeSharedPrefs: FakeFichajeSharedPrefs = FakeFichajeSharedPrefs()
 
     private val userNameUseCase = GetUserNameUseCase(fakeSharedPrefs)
+    private val passwordUseCase = GetPasswordUseCase(fakeSharedPrefs)
     private val clearDataUseCase = ClearDataUseCase(fakeSharedPrefs)
-    private val getUserRememberedUseCase = GetUserRememberedUseCase(fakeSharedPrefs)
-    private val userDataUseCase = GetUserDataUseCase(getUserRememberedUseCase,
-        userNameUseCase)
-    private val doLoginUseCaseDefault = DoLoginUseCase(fakeRepository, fakeSharedPrefs, userNameUseCase)
-    private val doLoginUseCaseException = DoLoginUseCase(fakeExceptionRepository, fakeSharedPrefs, userNameUseCase)
-    private val doLoginUseCaseRequestError = DoLoginUseCase(fakeErrorRepository, fakeSharedPrefs, userNameUseCase)
+    private val userDataUseCase = GetUserDataUseCase(userNameUseCase, passwordUseCase)
+    private val getLoginRequestSuccess = GetLoginRequestUseCase(fakeRepository, userDataUseCase)
+    private val getLoginRequestException = GetLoginRequestUseCase(fakeExceptionRepository, userDataUseCase)
+    private val getLoginRequestError = GetLoginRequestUseCase(fakeErrorRepository, userDataUseCase)
+    private val setUserDataUseCase = SetUserNameUseCase(fakeSharedPrefs)
+    private val setPasswordUseCase = SetPasswordUseCase(fakeSharedPrefs)
+    private val storeUserData = StoreUserDataUseCase(userDataUseCase, setUserDataUseCase, setPasswordUseCase)
+    private val doLoginUseCaseDefault = DoLoginUseCase(getLoginRequestSuccess, storeUserData)
+    private val doLoginUseCaseException = DoLoginUseCase(getLoginRequestException, storeUserData)
+    private val doLoginUseCaseRequestError = DoLoginUseCase(getLoginRequestError, storeUserData)
 
     private val loginViewModelHappyPath = LoginViewModel(doLoginUseCaseDefault, clearDataUseCase, userDataUseCase)
     private val loginViewModelException = LoginViewModel(doLoginUseCaseException, clearDataUseCase, userDataUseCase)

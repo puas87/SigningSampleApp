@@ -48,7 +48,13 @@ class ResultFragment : Fragment(), View.OnClickListener,
         binding.textEntrada.setOnClickListener(this)
         binding.textSalida.setOnClickListener(this)
 
-        binding.alarmSwitch.isChecked = resultViewModel.checkAlarm()
+        val checkAlarm = resultViewModel.checkAlarm()
+        binding.alarmSwitch.isChecked = checkAlarm
+        binding.alarmSwitch.text = if (checkAlarm)
+            getText(R.string.check_alarm_enabled)
+        else
+            getText(R.string.check_alarm_disabled)
+
         binding.alarmSwitch.setOnCheckedChangeListener(this)
 
         onEnterRequestResult()

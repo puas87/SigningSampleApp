@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.javilena87.fichaje.data.prefs.FakeFichajeSharedPrefs
 import com.javilena87.fichaje.data.repository.FakeFichajeRepository
 import com.javilena87.fichaje.data.repository.FakeHolidayRepository
+import com.javilena87.fichaje.domain.usecases.alarm.*
 import com.javilena87.fichaje.getOrAwaitValue
 import com.javilena87.fichaje.presentation.result.ResultViewModel
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +27,38 @@ internal class ResultViewModelTest {
     private var fakeHolidayRepository: FakeHolidayRepository = FakeHolidayRepository()
 
     private var fakeSharedPrefs: FakeFichajeSharedPrefs = FakeFichajeSharedPrefs()
+
+    private val setInitTimeUseCase = SetInitTimeUseCase(fakeSharedPrefs)
+
+    private val getAlarmInitTimeUseCase = GetAlarmInitTimeUseCase(fakeHolidayRepository)
+
+    private val getAlarmStateUseCase = GetAlarmStateUseCase(fakeSharedPrefs)
+
+    private val setAlarmStateUseCase = SetAlarmStateUseCase(fakeSharedPrefs)
+
+    private val resultViewModelHappyPath = ResultViewModel(
+        SetEnterUseCase(fakeRepository, fakeSharedPrefs),
+        SetExitUseCase(fakeRepository, fakeSharedPrefs),
+        setInitTimeUseCase,
+        getAlarmInitTimeUseCase,
+        getAlarmStateUseCase,
+        setAlarmStateUseCase)
+
+    private val resultViewModelException = ResultViewModel(
+        SetEnterUseCase(fakeExceptionRepository, fakeSharedPrefs),
+        SetExitUseCase(fakeExceptionRepository, fakeSharedPrefs),
+        setInitTimeUseCase,
+        getAlarmInitTimeUseCase,
+        getAlarmStateUseCase,
+        setAlarmStateUseCase)
+
+    private val resultViewModelError = ResultViewModel(
+        SetEnterUseCase(fakeErrorRepository, fakeSharedPrefs),
+        SetExitUseCase(fakeErrorRepository, fakeSharedPrefs),
+        setInitTimeUseCase,
+        getAlarmInitTimeUseCase,
+        getAlarmStateUseCase,
+        setAlarmStateUseCase)
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
@@ -50,61 +83,49 @@ internal class ResultViewModelTest {
 
     @Test
     fun `given success request when enter then return valid success data`() {
-        val resultViewModel = ResultViewModel(fakeRepository, fakeHolidayRepository, fakeSharedPrefs)
+        resultViewModelHappyPath.enter()
 
-        resultViewModel.enter()
-
-        val value = resultViewModel.resultEnterState.getOrAwaitValue()
+        val value = resultViewModelHappyPath.resultEnterState.getOrAwaitValue()
 
         assertTrue("Result is not true", value.requestOk)
     }
 
     @Test
     fun `given success request when enter then set last enter register`() {
-        val resultViewModel = ResultViewModel(fakeRepository, fakeHolidayRepository, fakeSharedPrefs)
-
-        resultViewModel.enter()
+        resultViewModelHappyPath.enter()
 
         assertEquals("Register is not valid", fakeSharedPrefs.getLastRegister(), "ENTRY")
     }
 
     @Test
     fun `given success request with not valid response when enter then return valid success data`() {
-        val resultViewModel = ResultViewModel(fakeErrorRepository, fakeHolidayRepository, fakeSharedPrefs)
+        resultViewModelError.enter()
 
-        resultViewModel.enter()
-
-        val value = resultViewModel.resultEnterState.getOrAwaitValue()
+        val value = resultViewModelError.resultEnterState.getOrAwaitValue()
 
         assertFalse("Result is not false", value.requestOk)
     }
 
     @Test
     fun `given fail request with exception when enter then return valid success data`() {
-        val resultViewModel = ResultViewModel(fakeExceptionRepository, fakeHolidayRepository, fakeSharedPrefs)
+        resultViewModelException.enter()
 
-        resultViewModel.enter()
-
-        val value = resultViewModel.resultEnterState.getOrAwaitValue()
+        val value = resultViewModelException.resultEnterState.getOrAwaitValue()
 
         assertFalse("Result is not false", value.requestOk)
     }
     @Test
     fun `given success request when exit then return valid success data`() {
-        val resultViewModel = ResultViewModel(fakeRepository, fakeHolidayRepository, fakeSharedPrefs)
+        resultViewModelHappyPath.exit()
 
-        resultViewModel.exit()
-
-        val value = resultViewModel.resultExitState.getOrAwaitValue()
+        val value = resultViewModelHappyPath.resultExitState.getOrAwaitValue()
 
         assertTrue("Result is not true", value.requestOk)
     }
 
     @Test
     fun `given success request when exit then set last exit register`() {
-        val resultViewModel = ResultViewModel(fakeRepository, fakeHolidayRepository, fakeSharedPrefs)
-
-        resultViewModel.exit()
+        resultViewModelHappyPath.exit()
 
         assertEquals("Register is not valid", fakeSharedPrefs.getLastRegister(), "EXIT")
     }
@@ -112,34 +133,28 @@ internal class ResultViewModelTest {
 
     @Test
     fun `given success request with not valid response when exit then return valid success data`() {
-        val resultViewModel = ResultViewModel(fakeErrorRepository, fakeHolidayRepository, fakeSharedPrefs)
+        resultViewModelError.exit()
 
-        resultViewModel.exit()
-
-        val value = resultViewModel.resultExitState.getOrAwaitValue()
+        val value = resultViewModelError.resultExitState.getOrAwaitValue()
 
         assertFalse("Result is not false", value.requestOk)
     }
 
     @Test
     fun `given fail request with exception when exit then return valid success data`() {
-        val resultViewModel = ResultViewModel(fakeExceptionRepository, fakeHolidayRepository, fakeSharedPrefs)
+        resultViewModelException.exit()
 
-        resultViewModel.exit()
-
-        val value = resultViewModel.resultExitState.getOrAwaitValue()
+        val value = resultViewModelException.resultExitState.getOrAwaitValue()
 
         assertFalse("Result is not false", value.requestOk)
     }
 
     @Test
     fun `given a resultviewmodel when set alarm state true then the alarm state is stored with value true`() {
-        val resultViewModel = ResultViewModel(fakeExceptionRepository, fakeHolidayRepository, fakeSharedPrefs)
+        resultViewModelException.setAlarm(true)
 
-        resultViewModel.setAlarm(true)
-
-        val checkValue = resultViewModel.checkAlarm()
-        val value = resultViewModel.resultAlarmOnOffState.getOrAwaitValue()
+        val checkValue = resultViewModelException.checkAlarm()
+        val value = resultViewModelException.resultAlarmOnOffState.getOrAwaitValue()
 
         assertTrue("Check alarm is not true", checkValue)
         assertTrue("Value is not true", value)
@@ -148,12 +163,10 @@ internal class ResultViewModelTest {
 
     @Test
     fun `given a resultviewmodel when set alarm state false then the alarm state is stored with value false`() {
-        val resultViewModel = ResultViewModel(fakeExceptionRepository, fakeHolidayRepository, fakeSharedPrefs)
+        resultViewModelException.setAlarm(false)
 
-        resultViewModel.setAlarm(false)
-
-        val value = resultViewModel.resultAlarmOnOffState.getOrAwaitValue()
-        val checkValue = resultViewModel.checkAlarm()
+        val value = resultViewModelException.resultAlarmOnOffState.getOrAwaitValue()
+        val checkValue = resultViewModelException.checkAlarm()
 
         assertFalse("Value is not false", value)
         assertFalse("Check alarm is not true", checkValue)
@@ -161,12 +174,10 @@ internal class ResultViewModelTest {
     }
 
     @Test
-    fun `given a resultviewmodel when enable alarm then the alarm starts with milliseconds`() {
-        val resultViewModel = ResultViewModel(fakeExceptionRepository, fakeHolidayRepository, fakeSharedPrefs)
+    fun `given a resultViewModel when enable alarm then the alarm starts with milliseconds`() {
+        resultViewModelException.enableAlarm()
 
-        resultViewModel.enableAlarm()
-
-        val value = resultViewModel.resultAlarmState.getOrAwaitValue()
+        val value = resultViewModelException.resultAlarmState.getOrAwaitValue()
 
         assertTrue("Alarm is not setted", value.nextAlarmDay > 0)
     }

@@ -5,8 +5,9 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import com.javilena87.fichaje.data.NationalHolidaysDatabaseValueResult
-import com.javilena87.fichaje.domain.FichajeSharedPrefsRepository
 import com.javilena87.fichaje.domain.HolidayRepository
+import com.javilena87.fichaje.domain.usecases.alarm.GetAlarmInitTimeUseCase
+import com.javilena87.fichaje.domain.usecases.alarm.SetInitTimeUseCase
 import com.javilena87.fichaje.receiver.FichajeReceiver
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -21,44 +22,9 @@ const val FIREBASE_DATABASE_DATE_FORMAT: String = "dd-MM-yyyy"
 const val ALARM_SCHEDULED_ACTION_VALUE: String = "SCHEDULED_ACTION"
 const val ALARM_DELAYED_ACTION_VALUE: String = "DELAYED_ACTION"
 
-fun setInitialAlarm(scope: CoroutineScope, fichajeSharedPrefsRepository: FichajeSharedPrefsRepository, holidayRepository: HolidayRepository, result: (miliseconds: Long) -> Unit) {
-    val calendar: Calendar = Calendar.getInstance().apply {
-        timeInMillis = System.currentTimeMillis()
-        set(Calendar.HOUR_OF_DAY, fichajeSharedPrefsRepository.getHourAlarm(true))
-        set(Calendar.MINUTE, fichajeSharedPrefsRepository.getMinuteAlarm(true))
-        val currentDay = get(Calendar.DAY_OF_WEEK)
-        if (timeInMillis < System.currentTimeMillis() || isWeekend(currentDay)) {
-            add(Calendar.DAY_OF_MONTH, getDaysToAdd(currentDay))
-        }
-    }
+fun setInitialAlarm(scope: CoroutineScope, setInitTime: SetInitTimeUseCase, getAlarmInitTime: GetAlarmInitTimeUseCase, result: (milliseconds: Long) -> Unit) {
     scope.launch {
-        calendar.timeInMillis = getDayFromDB(calendar, holidayRepository)
-        result(getDayFromFirebase(calendar, holidayRepository))
-    }
-}
-
-private suspend fun getDayFromFirebase(calendar: Calendar, holidayRepository: HolidayRepository): Long {
-    when (val result = holidayRepository.getHolidayFromFirebase(calendar)) {
-        is NationalHolidaysDatabaseValueResult.Success -> {
-            return result.validTime
-        }
-        is NationalHolidaysDatabaseValueResult.Error -> {
-            return result.currentTime
-        }
-        is NationalHolidaysDatabaseValueResult.NotValid -> {
-            calendar.add(Calendar.DAY_OF_MONTH, getDaysToAdd(calendar.get(Calendar.DAY_OF_WEEK)))
-            return getDayFromFirebase(calendar, holidayRepository)
-        }
-    }
-}
-
-private suspend fun getDayFromDB(calendar: Calendar, holidayRepository: HolidayRepository): Long {
-    val resultDB = holidayRepository.getDateIsInRange(calendar.timeInMillis).isEmpty()
-    return if (resultDB) {
-        calendar.timeInMillis
-    } else {
-        calendar.add(Calendar.DAY_OF_MONTH, getDaysToAdd(calendar.get(Calendar.DAY_OF_WEEK)))
-        getDayFromDB(calendar, holidayRepository)
+        result(getAlarmInitTime(setInitTime()))
     }
 }
 

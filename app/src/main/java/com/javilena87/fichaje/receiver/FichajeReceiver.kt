@@ -10,6 +10,8 @@ import com.javilena87.fichaje.domain.FichajeRepository
 import com.javilena87.fichaje.domain.FichajeSharedPrefsRepository
 import com.javilena87.fichaje.domain.HolidayRepository
 import com.javilena87.fichaje.domain.model.SigningData
+import com.javilena87.fichaje.domain.usecases.alarm.GetAlarmInitTimeUseCase
+import com.javilena87.fichaje.domain.usecases.alarm.SetInitTimeUseCase
 import com.javilena87.fichaje.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -35,6 +37,12 @@ class FichajeReceiver : BroadcastReceiver() {
     @PreferencesSource
     @Inject
     lateinit var fichajeSharedPrefsRepository: FichajeSharedPrefsRepository
+
+    @Inject
+    lateinit var setAlarm: SetInitTimeUseCase
+
+    @Inject
+    lateinit var getAlarmInitTime: GetAlarmInitTimeUseCase
 
     private val viewModelJob = Job()
 
@@ -149,7 +157,7 @@ class FichajeReceiver : BroadcastReceiver() {
 
 
     private fun enableAlarm(context: Context) {
-        setInitialAlarm(corutineScope, fichajeSharedPrefsRepository, holidayRepository) {
+        setInitialAlarm(corutineScope, setAlarm, getAlarmInitTime) {
             initAlarm(context, it)
         }
     }

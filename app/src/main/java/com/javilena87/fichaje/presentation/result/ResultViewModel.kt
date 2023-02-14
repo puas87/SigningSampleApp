@@ -4,12 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.javilena87.fichaje.di.DatabaseSource
-import com.javilena87.fichaje.di.PreferencesSource
-import com.javilena87.fichaje.di.RemoteSource
-import com.javilena87.fichaje.domain.FichajeRepository
-import com.javilena87.fichaje.domain.FichajeSharedPrefsRepository
-import com.javilena87.fichaje.domain.HolidayRepository
+import com.javilena87.fichaje.domain.usecases.alarm.*
 import com.javilena87.fichaje.presentation.result.model.ResultAlarmState
 import com.javilena87.fichaje.presentation.result.model.ResultEnterViewState
 import com.javilena87.fichaje.presentation.result.model.ResultExitViewState
@@ -18,14 +13,16 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-const val VALID_CHECK_IN = "check in"
 const val VALID_CHECK_OUT = "check out"
 
 @HiltViewModel
 class ResultViewModel @Inject constructor(
-    @RemoteSource private val fichajeRepository: FichajeRepository,
-    @DatabaseSource private val holidayRepository: HolidayRepository,
-    @PreferencesSource private val fichajeSharedPrefsRepository: FichajeSharedPrefsRepository
+    private val setEnter: SetEnterUseCase,
+    private val setExit: SetExitUseCase,
+    private val setAlarm: SetInitTimeUseCase,
+    private val getAlarmInitTime: GetAlarmInitTimeUseCase,
+    private val getAlarmState: GetAlarmStateUseCase,
+    private val setAlarmState: SetAlarmStateUseCase
 ) :
     ViewModel() {
 
@@ -43,39 +40,25 @@ class ResultViewModel @Inject constructor(
 
     fun enter() {
         viewModelScope.launch {
-            try {
-                val response = fichajeRepository.enter(fichajeSharedPrefsRepository.getUsername())
-                fichajeSharedPrefsRepository.setEntryRegister()
-                _resultEnterState.value = ResultEnterViewState(VALID_CHECK_IN == response.signing)
-            } catch (e: Exception) {
-                _resultEnterState.value = ResultEnterViewState()
-            }
+            _resultEnterState.value = ResultEnterViewState(setEnter())
         }
     }
 
     fun exit() {
         viewModelScope.launch {
-            try {
-                val response = fichajeRepository.exit(fichajeSharedPrefsRepository.getUsername())
-                fichajeSharedPrefsRepository.setExitRegister()
-                _resultExitState.value = ResultExitViewState(VALID_CHECK_OUT == response.signing)
-            } catch (e: Exception) {
-                _resultExitState.value = ResultExitViewState()
-            }
+            _resultExitState.value = ResultExitViewState(setExit())
         }
     }
 
-    fun checkAlarm(): Boolean {
-        return fichajeSharedPrefsRepository.getAlarmState()
-    }
+    fun checkAlarm(): Boolean = getAlarmState()
 
     fun setAlarm(checked: Boolean) {
         _resultAlarmOnOffState.value = checked
-        fichajeSharedPrefsRepository.setAlarmState(checked)
+        setAlarmState(checked)
     }
 
     fun enableAlarm() {
-        setInitialAlarm(viewModelScope, fichajeSharedPrefsRepository, holidayRepository) {
+        setInitialAlarm(viewModelScope, setAlarm, getAlarmInitTime) {
             _resultAlarmState.value = ResultAlarmState(it)
         }
     }

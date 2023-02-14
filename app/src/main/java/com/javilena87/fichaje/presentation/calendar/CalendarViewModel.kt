@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.javilena87.fichaje.data.db.HolidayReg
-import com.javilena87.fichaje.di.DatabaseSource
-import com.javilena87.fichaje.domain.HolidayRepository
-import com.javilena87.fichaje.presentation.calendar.adapter.DataItem
+import com.javilena87.fichaje.domain.usecases.calendar.GetAllHolidaysUseCase
+import com.javilena87.fichaje.domain.usecases.calendar.RemoveDayUseCase
+import com.javilena87.fichaje.domain.usecases.calendar.SetCalendarSelectionUseCase
 import com.javilena87.fichaje.presentation.calendar.model.CalendarHolidaysListState
 import com.javilena87.fichaje.presentation.calendar.model.CalendarOneDaySelectionState
 import com.javilena87.fichaje.presentation.calendar.model.CalendarRangeSelectionState
@@ -19,7 +19,11 @@ import java.util.*
 import javax.inject.Inject
 
 @HiltViewModel
-class CalendarViewModel @Inject constructor(@DatabaseSource private val holidayRepository: HolidayRepository) :
+class CalendarViewModel @Inject constructor(
+    private val setCalendarSelection: SetCalendarSelectionUseCase,
+    private val getAllHolidays: GetAllHolidaysUseCase,
+    private val removeDay: RemoveDayUseCase
+) :
     ViewModel() {
 
     private val _calendarHolidaysListState =
@@ -71,35 +75,26 @@ class CalendarViewModel @Inject constructor(@DatabaseSource private val holidayR
 
     fun addHolidaysSelection(holidayReg: HolidayReg) {
         viewModelScope.launch {
-            val isNotInRange = holidayRepository.getDateIsInRange(
-                holidayReg.dayIn,
-                holidayReg.dayOut
-            ).isEmpty()
-            if (isNotInRange) {
-                holidayRepository.addDayRangeRegister(holidayReg)
-                getAllHolidays()
-            } else {
+            val error = setCalendarSelection(holidayReg)
+            if (error) {
                 _calendarSelectionErrorState.value = true
+            } else {
+                getAllDaysHolidays()
             }
         }
     }
 
-    fun getAllHolidays() {
+    fun getAllDaysHolidays() {
         viewModelScope.launch {
-            val holidayList = holidayRepository.getAllHolidays()
-                .map { DataItem.HolidayItem(it) }
             _calendarHolidaysListState.value =
-                CalendarHolidaysListState(holidayList)
+                CalendarHolidaysListState(getAllHolidays())
         }
     }
 
     fun deleteHolidayFromPosition(position: Int) {
         viewModelScope.launch {
-            val holidayList = holidayRepository.getAllHolidays()
-            val itemToRemove = holidayList[position]
-            holidayRepository.deleteDayRange(itemToRemove)
-            _calendarRemoveHolidayState.value = CalendarRemoveHolidayState(itemToRemove, position)
-            getAllHolidays()
+            _calendarRemoveHolidayState.value = CalendarRemoveHolidayState(removeDay(position), position)
+            getAllDaysHolidays()
         }
     }
 }

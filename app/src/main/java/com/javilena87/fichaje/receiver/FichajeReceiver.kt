@@ -46,7 +46,7 @@ class FichajeReceiver : BroadcastReceiver() {
 
     private val viewModelJob = Job()
 
-    private val corutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
+    private val coroutineScope = CoroutineScope(viewModelJob + Dispatchers.Main)
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == "android.intent.action.BOOT_COMPLETED") {
@@ -96,8 +96,8 @@ class FichajeReceiver : BroadcastReceiver() {
         return calendarValue
     }
 
-    fun loginAndEnter(context: Context) {
-        corutineScope.launch {
+    private fun loginAndEnter(context: Context) {
+        coroutineScope.launch {
             val result = login()
             if (result) {
                 try {
@@ -118,8 +118,8 @@ class FichajeReceiver : BroadcastReceiver() {
         }
     }
 
-    fun loginAndExit(context: Context) {
-        corutineScope.launch {
+    private fun loginAndExit(context: Context) {
+        coroutineScope.launch {
             val result = login()
             if (result) {
                 try {
@@ -157,7 +157,7 @@ class FichajeReceiver : BroadcastReceiver() {
 
 
     private fun enableAlarm(context: Context) {
-        setInitialAlarm(corutineScope, setAlarm, getAlarmInitTime) {
+        setInitialAlarm(coroutineScope, setAlarm, getAlarmInitTime) {
             initAlarm(context, it)
         }
     }

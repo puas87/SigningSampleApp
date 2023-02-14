@@ -4,6 +4,9 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.javilena87.fichaje.MainCoroutineRule
 import com.javilena87.fichaje.data.db.HolidayReg
 import com.javilena87.fichaje.data.repository.FakeHolidayRepository
+import com.javilena87.fichaje.domain.usecases.calendar.GetAllHolidaysUseCase
+import com.javilena87.fichaje.domain.usecases.calendar.RemoveDayUseCase
+import com.javilena87.fichaje.domain.usecases.calendar.SetCalendarSelectionUseCase
 import com.javilena87.fichaje.getOrAwaitValue
 import com.javilena87.fichaje.presentation.calendar.CalendarViewModel
 import com.javilena87.fichaje.utils.setEndOfDay
@@ -20,6 +23,17 @@ internal class CalendarViewModelTest {
 
     private var fakeHolidayRepository: FakeHolidayRepository = FakeHolidayRepository()
 
+    private val setCalendarSelection = SetCalendarSelectionUseCase(fakeHolidayRepository)
+
+    private val getAllHolidays = GetAllHolidaysUseCase(fakeHolidayRepository)
+
+    private val removeDayUseCase = RemoveDayUseCase(fakeHolidayRepository, getAllHolidays)
+
+    private val calendarViewModel = CalendarViewModel(
+        setCalendarSelection,
+        getAllHolidays,
+        removeDayUseCase)
+
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
 
@@ -29,8 +43,6 @@ internal class CalendarViewModelTest {
 
     @Test
     fun `given CalendarViewModel when enable one day click calendar then notify states`() {
-        val calendarViewModel = CalendarViewModel(fakeHolidayRepository)
-
         calendarViewModel.enableDayClickCalendar()
 
         val valueOneDay = calendarViewModel.calendarOneDaySelectionState.getOrAwaitValue()
@@ -42,8 +54,6 @@ internal class CalendarViewModelTest {
 
     @Test
     fun `given CalendarViewModel when enable range click calendar then notify states`() {
-        val calendarViewModel = CalendarViewModel(fakeHolidayRepository)
-
         calendarViewModel.enableRangeClickCalendar()
 
         val valueOneDay = calendarViewModel.calendarOneDaySelectionState.getOrAwaitValue()
@@ -57,7 +67,6 @@ internal class CalendarViewModelTest {
     @OptIn(ExperimentalCoroutinesApi::class)
     @Test
     fun `given and long for init and long for end when add holiday selection then set new value`() = runTest {
-        val calendarViewModel = CalendarViewModel(fakeHolidayRepository)
         val calendar = Calendar.getInstance()
         val calendarOut = Calendar.getInstance().apply {
             setEndOfDay()
@@ -73,7 +82,6 @@ internal class CalendarViewModelTest {
 
     @Test
     fun `given and long for init and long for end when add holiday selection then send new list`() {
-        val calendarViewModel = CalendarViewModel(fakeHolidayRepository)
         val calendar = Calendar.getInstance()
 
         calendarViewModel.addHolidaysSelection(calendar.timeInMillis, calendar.timeInMillis)
@@ -86,9 +94,7 @@ internal class CalendarViewModelTest {
 
     @Test
     fun `given CalendarViewModel without holidays stored when get all stored holidays then the list is empty`() {
-        val calendarViewModel = CalendarViewModel(fakeHolidayRepository)
-
-        calendarViewModel.getAllHolidays()
+        calendarViewModel.getAllDaysHolidays()
 
         val allRegisters = calendarViewModel.calendarHolidaysListState.getOrAwaitValue()
 
@@ -98,11 +104,10 @@ internal class CalendarViewModelTest {
 
     @Test
     fun `given CalendarViewModel with holidays stored when get all stored holidays then the list is empty`() {
-        val calendarViewModel = CalendarViewModel(fakeHolidayRepository)
         val calendar = Calendar.getInstance()
         calendarViewModel.addHolidaysSelection(calendar.timeInMillis)
 
-        calendarViewModel.getAllHolidays()
+        calendarViewModel.getAllDaysHolidays()
 
         val allRegisters = calendarViewModel.calendarHolidaysListState.getOrAwaitValue()
 
@@ -112,7 +117,6 @@ internal class CalendarViewModelTest {
 
     @Test
     fun `given two identical holidays register when add second register holidays then notify incorrect register`() {
-        val calendarViewModel = CalendarViewModel(fakeHolidayRepository)
         val calendar = Calendar.getInstance()
         val calendarOut = Calendar.getInstance().apply {
             setEndOfDay()
@@ -129,7 +133,6 @@ internal class CalendarViewModelTest {
 
     @Test
     fun `given two identical holidays register when add second register holidays then not add to the list`() {
-        val calendarViewModel = CalendarViewModel(fakeHolidayRepository)
         val calendar = Calendar.getInstance()
         val calendarOut = Calendar.getInstance().apply {
             setEndOfDay()
@@ -139,7 +142,7 @@ internal class CalendarViewModelTest {
 
         calendarViewModel.addHolidaysSelection(calendar.timeInMillis, calendar.timeInMillis)
 
-        calendarViewModel.getAllHolidays()
+        calendarViewModel.getAllDaysHolidays()
         val allRegisters = calendarViewModel.calendarHolidaysListState.getOrAwaitValue()
 
         assertTrue("List of registers is empty", allRegisters.holidaysList!!.size == 1)
@@ -147,7 +150,6 @@ internal class CalendarViewModelTest {
 
     @Test
     fun `given a previous register when delete it then list has to be empty`() {
-        val calendarViewModel = CalendarViewModel(fakeHolidayRepository)
         val calendar = Calendar.getInstance()
         val calendarOut = Calendar.getInstance().apply {
             setEndOfDay()
@@ -164,7 +166,6 @@ internal class CalendarViewModelTest {
 
     @Test
     fun `given a previous register when delete it then notify the item removed`() {
-        val calendarViewModel = CalendarViewModel(fakeHolidayRepository)
         val calendar = Calendar.getInstance()
         val calendarOut = Calendar.getInstance().apply {
             setEndOfDay()

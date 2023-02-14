@@ -7,8 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.javilena87.fichaje.data.db.HolidayReg
 import com.javilena87.fichaje.databinding.ListItemHolidayRegBinding
+import com.javilena87.fichaje.domain.model.HolidayDataItem
 
-class HolidaysAdapter : ListAdapter<DataItem, RecyclerView.ViewHolder>(HolidayDiffCallBack()) {
+class HolidaysAdapter : ListAdapter<HolidayDataItem, RecyclerView.ViewHolder>(HolidayDiffCallBack()) {
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -23,7 +24,7 @@ class HolidaysAdapter : ListAdapter<DataItem, RecyclerView.ViewHolder>(HolidayDi
     ) {
         when (holder) {
             is HolidayViewHolder -> {
-                val holidayItem = getItem(position) as DataItem.HolidayItem
+                val holidayItem = getItem(position) as HolidayDataItem.HolidayItem
                 holder.bind(holidayItem.holiday)
             }
         }
@@ -49,26 +50,18 @@ class HolidayViewHolder private constructor(val binding: ListItemHolidayRegBindi
 }
 
 
-class HolidayDiffCallBack : DiffUtil.ItemCallback<DataItem>() {
+class HolidayDiffCallBack : DiffUtil.ItemCallback<HolidayDataItem>() {
     override fun areItemsTheSame(
-        oldItem: DataItem,
-        newItem: DataItem
+        oldItem: HolidayDataItem,
+        newItem: HolidayDataItem
     ): Boolean {
         return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(
-        oldItem: DataItem,
-        newItem: DataItem
+        oldItem: HolidayDataItem,
+        newItem: HolidayDataItem
     ): Boolean {
         return newItem == oldItem
     }
-}
-
-sealed class DataItem {
-    data class HolidayItem(val holiday: HolidayReg) : DataItem() {
-        override val id = holiday.dayIn
-    }
-
-    abstract val id: Long
 }

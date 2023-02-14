@@ -1,7 +1,7 @@
 package com.javilena87.fichaje.presentation.calendar.model
 
 import com.javilena87.fichaje.data.db.HolidayReg
-import com.javilena87.fichaje.presentation.calendar.adapter.DataItem
+import com.javilena87.fichaje.domain.model.HolidayDataItem
 
 data class CalendarRemoveHolidayState(
     val holidayItemRemoved: HolidayReg?,
@@ -12,5 +12,5 @@ data class CalendarOneDaySelectionState(val enabled: Boolean = false)
 
 data class CalendarRangeSelectionState(val enabled: Boolean = false)
 
-data class CalendarHolidaysListState(val holidaysList: List<DataItem>? = null)
+data class CalendarHolidaysListState(val holidaysList: List<HolidayDataItem>? = null)
 

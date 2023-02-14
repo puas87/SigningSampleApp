@@ -58,7 +58,7 @@ class CalendarFragment : Fragment(), RecyclerItemTouchHelperListener {
             DeleteItemCallback(0, ItemTouchHelper.LEFT, this)
         ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(binding.datesRecycler)
 
-        calendarViewModel.getAllHolidays()
+        calendarViewModel.getAllDaysHolidays()
 
         binding.buttonRangeDays.setOnClickListener {
             calendarViewModel.enableRangeClickCalendar()
